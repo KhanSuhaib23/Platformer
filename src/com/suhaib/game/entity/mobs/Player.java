@@ -2,25 +2,26 @@ package com.suhaib.game.entity.mobs; // right = 0, left = 1,
 
 import com.suhaib.game.graphics.Display;
 import com.suhaib.game.graphics.sprite.Sprite;
-import com.suhaib.game.input.Keyboard;
+import com.suhaib.game.input.GameInput;
+import com.suhaib.game.input.UserInput;
 import com.suhaib.game.level.Level;
+
+import static com.suhaib.game.input.UserInput.*;
 
 public class Player extends Mob {
 
-	private Keyboard key;
+	private GameInput gameInput;
 	private int animation = 0;
 	private boolean jump_check = false;
 	private int jumpSpeedY = 10;
 	private int updating = 0;
 	private boolean check = true;
 
-	public Player(int x, int y, Sprite[] sprite, Level level) {
+	public Player(int x, int y, Sprite[] sprite, Level level, GameInput gameInput) {
 		super(x, y, sprite, level);
+		this.gameInput = gameInput;
 	}
 
-	public void initializeKey(Keyboard key) {
-		this.key = key;
-	}
 
 	public void render(Display display) {
 		Sprite currentSprite = Sprite.mario[0];
@@ -76,10 +77,11 @@ public class Player extends Mob {
 	}
 
 	public void update() {
+		boolean left = gameInput.isDown(LEFT), right = gameInput.isDown(RIGHT), run = gameInput.isDown(RUN), jump = gameInput.isDown(JUMP);
 		animation++;
 		updating++;
 		if (updating >= 10000) updating = 0;
-		if (!key.left && key.right) {
+		if (!left && right) {
 			if (direction == 1) {
 				sliding = true;
 				if (updating % 3 == 0) sx+=2;
@@ -96,7 +98,7 @@ public class Player extends Mob {
 				direction = 0;
 				check = false;
 			}
-			if (key.run) {
+			if (gameInput.isDown(RUN)) {
 				if (updating % 13 == 0) sx++;
 				if (sx > 4) sx = 4;
 			}
@@ -105,7 +107,7 @@ public class Player extends Mob {
 			}
 		}
 
-		if (!key.right && key.left) {
+		if (!right && left) {
 			if (direction == 0) {
 				sliding = true;
 				if (updating % 3 == 0) sx-=2;
@@ -122,7 +124,7 @@ public class Player extends Mob {
 				direction = 1;
 				check = false;
 			}
-			if (key.run) {
+			if (run) {
 				if (updating % 13 == 0) sx--;
 				if (sx < -4) sx = -4;
 			}
@@ -131,7 +133,7 @@ public class Player extends Mob {
 			}
 		}
 
-		if (key.right && key.left) {
+		if (right && left) {
 			if (sx > 0) {
 				if (updating % 13 == 0) sx--;
 				if (sx < 0) sx = 0;
@@ -143,7 +145,7 @@ public class Player extends Mob {
 			check = true;
 		}
 
-		if (!key.right && !key.left) {
+		if (!right && !left) {
 			if (sx > 0) {
 				if (updating % 13 == 0) sx--;
 				if (sx < 0) sx = 0;
@@ -155,7 +157,7 @@ public class Player extends Mob {
 			check = true;
 		}
 		// sy = 0;
-		if (key.jump) {
+		if (jump) {
 			if (!jump_check) {
 				if (sy == 0) {
 					jump_check = true;
@@ -169,7 +171,7 @@ public class Player extends Mob {
 			if (updating % 4 == 0) {
 				sy++;
 			}
-			if (!key.jump) {
+			if (!jump) {
 				if (sy < 0) {
 					sy = 0;
 				}

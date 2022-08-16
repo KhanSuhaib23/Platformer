@@ -1,8 +1,8 @@
 package com.suhaib.game;
 
-import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
@@ -12,12 +12,12 @@ import javax.swing.JFrame;
 import com.suhaib.game.entity.mobs.Player;
 import com.suhaib.game.graphics.Display;
 import com.suhaib.game.graphics.sprite.Sprite;
-import com.suhaib.game.input.Keyboard;
+import com.suhaib.game.input.UserInput;
+import com.suhaib.game.input.UserInputDefinition;
 import com.suhaib.game.level.Level;
+import com.suhaib.game.render.Window;
 
-public class Game extends Canvas implements Runnable {
-
-	private static final long serialVersionUID = 1L;
+public class Game implements Runnable {
 	private static final int WIDTH = 900 / 3;
 	private static final int HEIGHT = WIDTH / 16 * 9;
 	private static final int SCALE = 3;
@@ -34,26 +34,34 @@ public class Game extends Canvas implements Runnable {
 	private int[] pixels = ((DataBufferInt) image.getRaster().getDataBuffer()).getData();
 
 	private Thread thread;
-	private JFrame frame;
 
 	private Display display;
-	private Keyboard key;
 	private Level level;
 	private Player player;
+	private Window window;
 
 	public Game() {
-		Dimension size = new Dimension(WIDTH * SCALE, HEIGHT * SCALE);
-		setPreferredSize(size);
-		setMinimumSize(size);
-		setMaximumSize(size);
+		UserInputDefinition keys = UserInputDefinition.define()
+				.map(KeyEvent.VK_A, UserInput.LEFT)
+				.map(KeyEvent.VK_S, UserInput.DOWN)
+				.map(KeyEvent.VK_D, UserInput.RIGHT)
+				.map(KeyEvent.VK_W, UserInput.UP)
+				.map(KeyEvent.VK_K, UserInput.RUN)
+				.map(KeyEvent.VK_J, UserInput.JUMP)
+				.build();
 
-		frame = new JFrame();
+		window = Window.builder()
+				.keyListener(keys)
+				.title("Super Mario Bros")
+				.width(WIDTH)
+				.height(HEIGHT)
+				.scale(SCALE)
+				.build();
+
+
 		display = new Display(WIDTH, HEIGHT);
-		level = new Level("/textures/level.png");
-		player = new Player(10 * 16, Y, Sprite.mario, level);
-		key = new Keyboard();
-		player.initializeKey(key);
-		addKeyListener(key);
+		level = new Level("/res/textures/level.png");
+		player = new Player(10 * 16, Y, Sprite.mario, level, keys);
 	}
 
 	public synchronized void start() {
@@ -72,31 +80,18 @@ public class Game extends Canvas implements Runnable {
 	}
 
 	private void update() {
-		key.update();
 		player.update();
-		
 	}
 
 	private void render() {
-		BufferStrategy buffer = getBufferStrategy();
-		if (buffer == null) {
-			createBufferStrategy(3);
-			return;
-		}
-		Graphics g = buffer.getDrawGraphics();
 		display.clear();
 		level.render(player.x - WIDTH / 2, Y - (HEIGHT - 2 * 16), display);
 		player.render(display);
-		for (int i = 0; i < pixels.length; i++) {
-			pixels[i] = display.pixels[i];
-		}
-		g.drawImage(image, 0, 0, getWidth(), getHeight(), null);
-		g.dispose();
-		buffer.show();
+		window.display(display.pixels);
 	}
 
 	public void run() {
-		requestFocus();
+		window.requestFocus();
 		while (running) {
 			if (check) {
 				base_time = System.nanoTime();
@@ -114,13 +109,6 @@ public class Game extends Canvas implements Runnable {
 
 	public static void main(String[] args) {
 		Game game = new Game();
-		game.frame.setTitle("Mario");
-		game.frame.setResizable(false);
-		game.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		game.frame.add(game);
-		game.frame.pack();
-		game.frame.setLocationRelativeTo(null);
-		game.frame.setVisible(true);
 
 		game.start();
 	}
