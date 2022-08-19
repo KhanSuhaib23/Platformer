@@ -4,6 +4,7 @@ import com.suhaib.game.entity.Entity;
 import com.suhaib.game.graphics.Display;
 import com.suhaib.game.graphics.sprite.Sprite;
 import com.suhaib.game.level.Level;
+import com.suhaib.game.math.TilePosition;
 
 public class Mob extends Entity {
 
@@ -51,7 +52,7 @@ public class Mob extends Entity {
 		for (int c = 0; c < 4; c++) {
 			xt = (x + c % 2 * 9 + 3) / 16;
 			yt = (y + c / 2 * 9 + 6) / 16;
-			if (level.getTile(xt, yt).solid()) solid = true;
+			if (level.getTile(new TilePosition(xt, yt)).solid()) solid = true;
 		}
 		return solid;
 	}

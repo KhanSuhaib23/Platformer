@@ -5,6 +5,7 @@ import com.suhaib.game.graphics.Display;
 import com.suhaib.game.level.Level;
 import com.suhaib.game.level.tile.Tile;
 import com.suhaib.game.math.RenderPosition;
+import com.suhaib.game.math.TilePosition;
 
 public class Renderer {
     private final Display display;
@@ -24,9 +25,20 @@ public class Renderer {
         int y1 = (yScroll + display.HEIGHT) / 16;
         for (int y = y0; y <= y1; y++) {
             for (int x = x0; x <= x1; x++) {
-                renderTile(x * 16, y * 16, level.getTile(x, y));
+                try {
+                    renderTile(x * 16, y * 16, level.getTile(new TilePosition(x, y)));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
+//
+//        for (int y = 0; y < level.height(); y++) {
+//            for (int x = 0; x < level.width(); x++) {
+//                Tile tile = level.getTile(new TilePosition(x, y));
+//                display.pixels[x + y * display.WIDTH] = tile.solid() ? 0 : 0xffffffff;
+//            }
+//        }
     }
 
     public void renderTile(int xPosition, int yPosition, Tile tile) {

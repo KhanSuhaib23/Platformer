@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 
 import com.suhaib.game.graphics.Display;
 import com.suhaib.game.level.tile.Tile;
+import com.suhaib.game.math.RenderPosition;
 import com.suhaib.game.math.TilePosition;
 import com.suhaib.game.resource.TileSet;
 
@@ -58,9 +59,22 @@ public class Level {
 		}
 	}
 
-
-	public Tile getTile(int x, int y) {
-		return tileSet.get(x + y * this.width);
+	public Tile getTile(TilePosition tilePosition) {
+		if (tilePosition.x() < 0 || tilePosition.x() >= width || tilePosition.y() < 0 || tilePosition.y() >= height) {
+			return tileSet.getBlank();
+		}
+		return tileSet.get(tiles[(int) (tilePosition.x() + tilePosition.y() * width)]);
 	}
 
+	public TilePosition spawnLocation() {
+		return spawnLocation;
+	}
+
+	public int width() {
+		return width;
+	}
+
+	public int height() {
+		return height;
+	}
 }

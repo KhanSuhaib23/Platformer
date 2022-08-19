@@ -42,7 +42,7 @@ public class TileSet {
                 int xPos = x * tileWidth;
                 for (int y = 0; y < numY; ++y) {
                     int yPos = y * tileHeight;
-                    Slice2D slice = new Slice2D(xPos, yPos, tileWidth, tileHeight, pixels);
+                    Slice2D slice = new Slice2D(xPos, yPos, totalWidth, pixels);
                     int i = x + y * numX;
                     tiles[i] = new TexturedTile(tileWidth, tileHeight, isSolid.apply(i), slice);
                 }
@@ -51,6 +51,10 @@ public class TileSet {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Tile getBlank() {
+        return blank;
     }
 
     public Tile get(int i) {

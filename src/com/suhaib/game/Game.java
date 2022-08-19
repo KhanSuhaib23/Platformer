@@ -12,6 +12,8 @@ import com.suhaib.game.input.UserInputDefinition;
 import com.suhaib.game.level.Level;
 import com.suhaib.game.level.tile.Tile;
 import com.suhaib.game.math.RenderPosition;
+import com.suhaib.game.math.TilePosition;
+import com.suhaib.game.math.Vector2;
 import com.suhaib.game.render.Renderer;
 import com.suhaib.game.render.Window;
 import com.suhaib.game.resource.*;
@@ -71,9 +73,9 @@ public class Game implements Runnable {
 				.build();
 		level = index.load(Level.class, "level_1_1");
 
-		player = new Player(10 * 16, Y, Sprite.mario, level, keys);
+		RenderPosition playerPosition = level.spawnLocation().renderPosition();
 
-		System.out.println();
+		player = new Player((int) playerPosition.x(), (int) playerPosition.y(), Sprite.mario, level, keys);
 	}
 
 	public synchronized void start() {
@@ -97,7 +99,7 @@ public class Game implements Runnable {
 
 	private void render() {
 		display.clear();
-		renderer.render(level, new RenderPosition(player.x - WIDTH / 2, Y - (HEIGHT - 2 * 16)));
+		renderer.render(level, player.getRenderPosition());
 		player.render(display);
 		window.display(display.pixels);
 	}

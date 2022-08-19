@@ -5,6 +5,7 @@ import com.suhaib.game.graphics.sprite.Sprite;
 import com.suhaib.game.input.GameInput;
 import com.suhaib.game.input.UserInput;
 import com.suhaib.game.level.Level;
+import com.suhaib.game.math.RenderPosition;
 
 import static com.suhaib.game.input.UserInput.*;
 
@@ -209,6 +210,10 @@ public class Player extends Mob {
 		}
 
 		move(sx, sy);
+	}
+
+	public RenderPosition getRenderPosition() {
+		return new RenderPosition(x, y);
 	}
 
 }

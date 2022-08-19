@@ -1,6 +1,5 @@
 package com.suhaib.game.level.tile;
 
-import com.suhaib.game.math.Slice2D;
 
 public class SolidColorTile extends Tile {
     private final int color;
