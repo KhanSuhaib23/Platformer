@@ -1,13 +1,8 @@
 package com.suhaib.game;
 
-import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
-
-import javax.swing.JFrame;
 
 import com.suhaib.game.entity.mobs.Player;
 import com.suhaib.game.graphics.Display;
@@ -15,9 +10,14 @@ import com.suhaib.game.graphics.sprite.Sprite;
 import com.suhaib.game.input.UserInput;
 import com.suhaib.game.input.UserInputDefinition;
 import com.suhaib.game.level.Level;
+import com.suhaib.game.level.tile.Tile;
+import com.suhaib.game.math.RenderPosition;
+import com.suhaib.game.render.Renderer;
 import com.suhaib.game.render.Window;
+import com.suhaib.game.resource.*;
 
 public class Game implements Runnable {
+
 	private static final int WIDTH = 900 / 3;
 	private static final int HEIGHT = WIDTH / 16 * 9;
 	private static final int SCALE = 3;
@@ -39,6 +39,8 @@ public class Game implements Runnable {
 	private Level level;
 	private Player player;
 	private Window window;
+	private ResourceIndex index;
+	private Renderer renderer;
 
 	public Game() {
 		UserInputDefinition keys = UserInputDefinition.define()
@@ -60,8 +62,18 @@ public class Game implements Runnable {
 
 
 		display = new Display(WIDTH, HEIGHT);
-		level = new Level("/res/textures/level.png");
+
+		renderer = new Renderer(display);
+
+		index = ResourceIndex.builder(Constants.META_BASE + "resource.meta")
+				.loader(Level.class, new LevelLoader())
+				.loader(TileSet.class, new TileSetLoader())
+				.build();
+		level = index.load(Level.class, "level_1_1");
+
 		player = new Player(10 * 16, Y, Sprite.mario, level, keys);
+
+		System.out.println();
 	}
 
 	public synchronized void start() {
@@ -85,7 +97,7 @@ public class Game implements Runnable {
 
 	private void render() {
 		display.clear();
-		level.render(player.x - WIDTH / 2, Y - (HEIGHT - 2 * 16), display);
+		renderer.render(level, new RenderPosition(player.x - WIDTH / 2, Y - (HEIGHT - 2 * 16)));
 		player.render(display);
 		window.display(display.pixels);
 	}

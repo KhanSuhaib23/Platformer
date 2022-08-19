@@ -1,0 +1,18 @@
+upper_day: TileSet
+{
+    path: 'tiles.png'
+    tile.width: 16
+    tile.height: 16
+
+    tile.0.solid: true
+    tile.1.solid: false
+}
+
+level_1_1: Level
+{
+    path: 'level_1_1.lvl'
+    tileset: upper_day
+    spawn_loc.x: 5
+    spawn_loc.y: 5
+}
+

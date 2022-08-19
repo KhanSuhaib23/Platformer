@@ -1,65 +1,66 @@
 package com.suhaib.game.level;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.imageio.ImageIO;
 
 import com.suhaib.game.graphics.Display;
 import com.suhaib.game.level.tile.Tile;
+import com.suhaib.game.math.TilePosition;
+import com.suhaib.game.resource.TileSet;
 
 public class Level {
-	private String path;
-	private int width;
-	private int height;
-	private int[] tiles;
-	private Display display;
+	private final int width;
+	private final int height;
+	private final int[] tiles;
+	private final TileSet tileSet;
+	private final TilePosition spawnLocation;
 
-	public Level(String path) {
-		this.path = path;
-		load();
-	}
-
-	private void load() {
+	public Level(String path, TileSet tileSet, TilePosition spawnLocation) {
 		try {
-			BufferedImage image = ImageIO.read(Level.class.getResource(path));
-			this.width = image.getWidth();
-			this.height = image.getHeight();
-			tiles = new int[width * height];
-			image.getRGB(0, 0, this.width, this.height, tiles, 0, this.width);
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+			BufferedReader reader = new BufferedReader(new FileReader(path));
+			int[] header = Arrays.stream(reader.readLine().split(" "))
+					.map(String::trim)
+					.mapToInt(Integer::parseInt)
+					.toArray();
 
-	public void render(int xScroll, int yScroll, Display display) {
-		this.display = display;
-		display.setOffSet(xScroll, yScroll);
-		int x0 = xScroll / 16;
-		int x1 = (xScroll + display.WIDTH) / 16;
-		int y0 = yScroll / 16;
-		int y1 = (yScroll + display.HEIGHT) / 16;
-		for (int y = y0; y <= y1; y++) {
-			for (int x = x0; x <= x1; x++) {
-				getTile(x, y).render(x, y, display);
+			if (header.length != 2) {
+				throw new RuntimeException("Level file " + path + " corrupted. Header should contain two integers separated by a space.");
 			}
-		}
 
+			int width = header[0];
+			int height = header[1];
+
+			this.width = width;
+			this.height = height;
+
+			this.tiles = Arrays.stream(reader.readLine().split(" "))
+					.map(String::trim)
+					.mapToInt(Integer::parseInt)
+					.toArray();
+
+			if (this.tiles.length != this.width * this.height) {
+				throw new RuntimeException("Level file " + path + " corrupted. Should contain width * height = " + width * height + "number of tile values");
+			}
+
+			this.tileSet = tileSet;
+			this.spawnLocation = spawnLocation;
+
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException(e);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
+
 
 	public Tile getTile(int x, int y) {
-		if (x < 0 || x >= this.width || y < 0 || y >= this.height) return Tile.blank;
-		if (tiles[x + y * this.width] == Tile.COL_GROUND) return Tile.ground;
-		else if (tiles[x + y * this.width] == Tile.COL_BLOCK) return Tile.block;
-		else if (tiles[x + y * this.width] == Tile.COL_SOLID_BLOCK) return Tile.solid_block;
-		else if (tiles[x + y * this.width] == Tile.COL_COIN_BLOCK) return Tile.coin_block;
-		else if (tiles[x + y * this.width] == Tile.COL_PIPE_TOP_1) return Tile.pipe_top_1;
-		else if (tiles[x + y * this.width] == Tile.COL_PIPE_TOP_2) return Tile.pipe_top_2;
-		else if (tiles[x + y * this.width] == Tile.COL_PIPE_BOTTOM_1) return Tile.pipe_bottom_1;
-		else if (tiles[x + y * this.width] == Tile.COL_PIPE_BOTTOM_2) return Tile.pipe_bottom_2;
-		else if (tiles[x + y * this.width] == Tile.COL_SKY) return Tile.sky;
-		else return Tile.blank;
+		return tileSet.get(x + y * this.width);
 	}
 
 }
