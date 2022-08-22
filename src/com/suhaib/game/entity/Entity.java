@@ -3,6 +3,7 @@ package com.suhaib.game.entity;
 import com.suhaib.game.graphics.Display;
 import com.suhaib.game.graphics.sprite.Sprite;
 import com.suhaib.game.level.Level;
+import com.suhaib.game.render.Renderer;
 
 public class Entity {
 	public int x, y;
@@ -20,7 +21,7 @@ public class Entity {
 
 	}
 
-	public void render(Display display) {
+	public void render(Renderer renderer) {
 
 	}
 

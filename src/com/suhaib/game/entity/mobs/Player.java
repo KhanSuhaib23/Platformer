@@ -1,11 +1,10 @@
 package com.suhaib.game.entity.mobs; // right = 0, left = 1, 
 
-import com.suhaib.game.graphics.Display;
 import com.suhaib.game.graphics.sprite.Sprite;
 import com.suhaib.game.input.GameInput;
-import com.suhaib.game.input.UserInput;
 import com.suhaib.game.level.Level;
 import com.suhaib.game.math.RenderPosition;
+import com.suhaib.game.render.Renderer;
 
 import static com.suhaib.game.input.UserInput.*;
 
@@ -24,7 +23,7 @@ public class Player extends Mob {
 	}
 
 
-	public void render(Display display) {
+	public void render(Renderer renderer) {
 		Sprite currentSprite = Sprite.mario[0];
 		if (moving) {
 			if (direction == 0) {
@@ -74,7 +73,7 @@ public class Player extends Mob {
 				currentSprite = Sprite.mario[11];
 			}
 		}
-		display.renderSprite(x, y, currentSprite);
+		renderer.renderSprite(x, y, currentSprite);
 	}
 
 	public void update() {

@@ -1,10 +1,11 @@
 package com.suhaib.game.entity.mobs;
 
 import com.suhaib.game.entity.Entity;
-import com.suhaib.game.graphics.Display;
 import com.suhaib.game.graphics.sprite.Sprite;
 import com.suhaib.game.level.Level;
+import com.suhaib.game.math.RenderPosition;
 import com.suhaib.game.math.TilePosition;
+import com.suhaib.game.render.Renderer;
 
 public class Mob extends Entity {
 
@@ -29,7 +30,7 @@ public class Mob extends Entity {
 		super(x, y, sprite, level);
 	}
 
-	public void render(Display display) {
+	public void render(Renderer renderer) {
 
 	}
 
@@ -47,14 +48,12 @@ public class Mob extends Entity {
 	}
 
 	public boolean collision(int x, int y) {
-		int xt = 0, yt = 0;
-		boolean solid = false;
-		for (int c = 0; c < 4; c++) {
-			xt = (x + c % 2 * 9 + 3) / 16;
-			yt = (y + c / 2 * 9 + 6) / 16;
-			if (level.getTile(new TilePosition(xt, yt)).solid()) solid = true;
+		RenderPosition renderPosition = new RenderPosition(x, y);
+		TilePosition tilePosition = renderPosition.tilePosition();
+		if (level.getTile(tilePosition).solid()) {
+			return true;
 		}
-		return solid;
+		return false;
 	}
 
 }

@@ -21,28 +21,4 @@ public class Display {
 			pixels[i] = 0xffffffff;
 		}
 	}
-
-	public void renderSprite(int xPosition, int yPosition, Sprite sprite) {
-		xPosition -= xOffSet;
-		yPosition -= yOffSet;
-		int xAbsolute;
-		int yAbsolute;
-		for (int y = 0; y < sprite.size; y++) {
-			yAbsolute = y + yPosition;
-			if (yAbsolute < -16 || yAbsolute >= HEIGHT) break;
-			if (yAbsolute < 0) yAbsolute = 0;
-			for (int x = 0; x < sprite.size; x++) {
-				xAbsolute = x + xPosition;
-				if (xAbsolute < -16 || xAbsolute >= WIDTH) break;
-				if (xAbsolute < 0) xAbsolute = 0;
-				int color = sprite.pixels[x + y * sprite.size];
-				if (color != 0xffff00ff) pixels[xAbsolute + yAbsolute * WIDTH] = color;
-			}
-		}
-	}
-
-	public void setOffSet(int xOffSet, int yOffSet) {
-		this.xOffSet = xOffSet;
-		this.yOffSet = yOffSet;
-	}
 }
