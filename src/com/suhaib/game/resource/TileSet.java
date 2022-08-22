@@ -25,7 +25,7 @@ public class TileSet {
 
             pixels = new int[totalWidth * totalHeight];
 
-            image.getRGB(0, 0, totalWidth, totalHeight, pixels, 0, totalWidth);
+            image.getRGB(0, 0, totalWidth, totalHeight, pixels, (totalHeight - 1) * totalWidth, -totalWidth);
 
             this.tileHeight = tileHeight;
             this.tileWidth = tileWidth;

@@ -19,7 +19,7 @@ public class Packer {
 
         int[] pixels = new int[width * height];
 
-        image.getRGB(0, 0, width, height, pixels, 0, width);
+        image.getRGB(0, 0, width, height, pixels, (height - 1) * width, -width);
 
         Map<Integer, Integer> tileMap = Map.of(
                 0xff7f3300, 0,

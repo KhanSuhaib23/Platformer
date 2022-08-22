@@ -6,17 +6,6 @@ public class Sprite {
 	private SpriteSheet sheet;
 	public int[] pixels;
 
-	public static Sprite ground = new Sprite(16, 0, 0, SpriteSheet.tiles);
-	public static Sprite sky = new Sprite(16, 1, 0, SpriteSheet.tiles);
-	public static Sprite coin_block = new Sprite(16, 2, 0, SpriteSheet.tiles);
-	public static Sprite block = new Sprite(16, 3, 0, SpriteSheet.tiles);
-	public static Sprite solid_block = new Sprite(16, 2, 1, SpriteSheet.tiles);
-	public static Sprite blank = new Sprite(16, 4, 0, SpriteSheet.tiles);
-	public static Sprite pipe_top_1 = new Sprite(16, 0, 1, SpriteSheet.tiles);
-	public static Sprite pipe_top_2 = new Sprite(16, 1, 1, SpriteSheet.tiles);
-	public static Sprite pipe_bottom_1 = new Sprite(16, 0, 2, SpriteSheet.tiles);
-	public static Sprite pipe_bottom_2 = new Sprite(16, 1, 2, SpriteSheet.tiles);
-
 	public static Sprite[] mario = { 
 			new Sprite(16, 0, 0, SpriteSheet.sprites),  // 0 stand right
 			new Sprite(16, 1, 0, SpriteSheet.sprites),  // 1 stand left

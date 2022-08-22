@@ -162,7 +162,7 @@ public class Player extends Mob {
 			if (!jump_check) {
 				if (sy == 0) {
 					jump_check = true;
-					sy = -6;
+					sy = 6;
 				}
 			}
 
@@ -170,25 +170,25 @@ public class Player extends Mob {
 
 		if (jump_check) {
 			if (updating % 4 == 0) {
-				sy++;
+				sy--;
 			}
 			if (!jump) {
-				if (sy < 0) {
+				if (sy > 0) {
 					sy = 0;
 				}
 				else {
-					if (updating % 8 == 0) sy++;
+					if (updating % 8 == 0) sy--;
 				}
 			}
 
 			if (collision(x, y + sy)) {
-				if (sy > 0) jump_check = false;
+				if (sy < 0) jump_check = false;
 				else jump_check = true;
 				sy = 0;
 			}
 		}
 		else {
-			sy++;
+			sy--;
 			if (collision(x, y + sy)) {
 				if (sy > 0) jump_check = false;
 				else jump_check = true;
@@ -208,6 +208,7 @@ public class Player extends Mob {
 			moving = true;
 			jumping = false;
 		}
+
 
 		move(sx, sy);
 	}

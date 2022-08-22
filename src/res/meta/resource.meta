@@ -13,6 +13,7 @@ level_1_1: Level
     path: 'level_1_1.lvl'
     tileset: upper_day
     spawn_loc.x: 10
-    spawn_loc.y: 9
+    spawn_loc.y: 2
+
 }
 

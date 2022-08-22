@@ -3,6 +3,7 @@ package com.suhaib.game;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.util.function.UnaryOperator;
 
 import com.suhaib.game.entity.mobs.Player;
 import com.suhaib.game.graphics.Display;
@@ -14,6 +15,7 @@ import com.suhaib.game.level.tile.Tile;
 import com.suhaib.game.math.RenderPosition;
 import com.suhaib.game.math.TilePosition;
 import com.suhaib.game.math.Vector2;
+import com.suhaib.game.render.Camera;
 import com.suhaib.game.render.Renderer;
 import com.suhaib.game.render.Window;
 import com.suhaib.game.resource.*;
@@ -43,6 +45,7 @@ public class Game implements Runnable {
 	private Window window;
 	private ResourceIndex index;
 	private Renderer renderer;
+	private Camera camera;
 
 	public Game() {
 		UserInputDefinition keys = UserInputDefinition.define()
@@ -74,6 +77,11 @@ public class Game implements Runnable {
 		level = index.load(Level.class, "level_1_1");
 
 		RenderPosition playerPosition = level.spawnLocation().renderPosition();
+		long threshold = playerPosition.y();
+
+		UnaryOperator<Long> relu = v -> v <= threshold ? threshold : v;
+
+		camera = new Camera(WIDTH, HEIGHT, rp -> new RenderPosition(rp.x(), relu.apply(rp.y())));
 
 		player = new Player((int) playerPosition.x(), (int) playerPosition.y(), Sprite.mario, level, keys);
 	}
@@ -99,7 +107,7 @@ public class Game implements Runnable {
 
 	private void render() {
 		display.clear();
-		renderer.render(level, player.getRenderPosition());
+		renderer.render(level, camera.getCameraTopLeft(player.getRenderPosition()));
 		player.render(display);
 		window.display(display.pixels);
 	}

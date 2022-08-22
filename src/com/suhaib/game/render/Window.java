@@ -56,8 +56,10 @@ public class Window {
         }
         Graphics g = buffer.getDrawGraphics();
 
-        for (int i = 0; i < pixels.length; i++) {
-            imagePixels[i] = pixels[i];
+        for (int y = 0; y < height; ++y) {
+            for (int x = 0; x < width; ++x) {
+                imagePixels[x + (height - y - 1) * width] = pixels[x + y * width];
+            }
         }
         g.drawImage(bufferedImage, 0, 0, width * scale, height * scale, null);
         g.dispose();
