@@ -9,6 +9,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.function.Function;
 
 public class TileSet {
@@ -17,7 +18,7 @@ public class TileSet {
     private Tile[] tiles;
     private Tile blank;
 
-    public TileSet(String path, int tileWidth, int tileHeight, Function<Integer, Boolean> isSolid) {
+    public TileSet(String path, int tileWidth, int tileHeight, List<Tile.Definition> definitions) {
         try {
             BufferedImage image = ImageIO.read(new File(path));
             int totalWidth = image.getWidth();
@@ -33,19 +34,14 @@ public class TileSet {
 
             this.blank = new SolidColorTile(tileWidth, tileHeight, true, 0);
 
-            int numX = totalWidth / tileWidth;
-            int numY = totalHeight / tileHeight;
+            tiles = new Tile[definitions.size()];
 
-            tiles = new Tile[numX * numY];
-
-            for (int x = 0; x < numX; ++x) {
-                int xPos = x * tileWidth;
-                for (int y = 0; y < numY; ++y) {
-                    int yPos = y * tileHeight;
-                    Slice2D slice = new Slice2D(xPos, yPos, totalWidth, pixels);
-                    int i = x + y * numX;
-                    tiles[i] = new TexturedTile(tileWidth, tileHeight, isSolid.apply(i), slice);
-                }
+            for (int i = 0; i < definitions.size(); ++i) {
+                Tile.Definition definition = definitions.get(i);
+                int xPos = definition.x() * tileWidth;
+                int yPos = definition.y() * tileHeight;
+                Slice2D slice = new Slice2D(xPos, yPos, totalWidth, pixels);
+                tiles[i] = new TexturedTile(tileWidth, tileHeight, definition.solid(), slice);
             }
 
         } catch (IOException e) {

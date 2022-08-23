@@ -4,9 +4,17 @@ upper_day: TileSet
         + width = 16
         + height = 16
         end
-    solid =
-        - true
-        - false
+    tiles =
+        -
+            + x = 0
+            + y = 0
+            + solid = true
+            end
+        -
+            + x = 1
+            + y = 0
+            + solid = false
+            end
         end
 end
 

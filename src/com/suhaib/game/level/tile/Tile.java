@@ -2,6 +2,9 @@ package com.suhaib.game.level.tile;
 
 
 public abstract class Tile {
+	public record Definition(int x, int y, boolean solid) {
+
+	}
 
 	private final boolean solid;
 	private final int width, height;

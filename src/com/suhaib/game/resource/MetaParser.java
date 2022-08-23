@@ -234,6 +234,7 @@ public class MetaParser {
         Node get(String key);
         Node get(int index);
         <T> T value();
+        int size();
     }
 
     public static class ValueNode<T> implements Node {
@@ -261,6 +262,11 @@ public class MetaParser {
         @Override
         public T value() {
             return resourceValue.val();
+        }
+
+        @Override
+        public int size() {
+            return 1;
         }
     }
 
@@ -290,6 +296,11 @@ public class MetaParser {
         @Override
         public <T> T value() {
             throw new RuntimeException("Cannot get by index on a object node");
+        }
+
+        @Override
+        public int size() {
+            return objectMap.size();
         }
     }
 
@@ -322,6 +333,11 @@ public class MetaParser {
         @Override
         public <T> T value() {
             throw new RuntimeException("Cannot get by index on a Array node");
+        }
+
+        @Override
+        public int size() {
+            return arrayList.size();
         }
     }
 
