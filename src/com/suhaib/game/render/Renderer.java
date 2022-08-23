@@ -1,6 +1,5 @@
 package com.suhaib.game.render;
 
-import com.suhaib.game.entity.mobs.Player;
 import com.suhaib.game.graphics.Display;
 import com.suhaib.game.graphics.sprite.Sprite;
 import com.suhaib.game.level.Level;

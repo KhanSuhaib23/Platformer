@@ -1,19 +1,20 @@
 upper_day: TileSet
-{
-    path: 'tiles.png'
-    tile.width: 16
-    tile.height: 16
-
-    tile.0.solid: true
-    tile.1.solid: false
-}
+    path = 'tiles.png'
+    tile =
+        + width = 16
+        + height = 16
+        end
+    solid =
+        - true
+        - false
+        end
+end
 
 level_1_1: Level
-{
-    path: 'level_1_1.lvl'
-    tileset: upper_day
-    spawn_loc.x: 10
-    spawn_loc.y: 2
-
-}
-
+    path = 'level_1_1.lvl'
+    tileset = upper_day
+    player_spawn =
+        + x = 10
+        + y = 2
+        end
+end

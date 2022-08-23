@@ -13,7 +13,7 @@ public class SpriteSheet {
 	private String path;
 
 	public static SpriteSheet tiles = new SpriteSheet("/res/raw/tiles.png");
-	public static SpriteSheet sprites = new SpriteSheet("/res/raw/sprite.png");
+	public static SpriteSheet sprites = new SpriteSheet("/res/data/sprite.png");
 
 	public SpriteSheet(String path) {
 		this.path = path;

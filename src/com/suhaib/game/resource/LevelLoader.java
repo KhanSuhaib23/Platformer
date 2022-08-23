@@ -7,12 +7,13 @@ import static com.suhaib.game.resource.Constants.RESOURCE_BASE;
 
 public class LevelLoader implements ResourceLoader<Level> {
     @Override
-    public Level load(ResourceIndex.ResourceContext context, ResourceIndex index) {
-        TileSet tileSet = index.load(TileSet.class, context.get("tileset"));
-        int x = context.get("spawn_loc.x");
-        int y = context.get("spawn_loc.y");
+    public Level load(MetaParser.Node context, ResourceIndex index) {
+        TileSet tileSet = index.load(TileSet.class, context.get("tileset").value());
+        int x = context.get("player_spawn").get("x").value();
+        int y = context.get("player_spawn").get("y").value();
+
         TilePosition spawnLocation = new TilePosition(x, y);
-        String path = RESOURCE_BASE + context.get("path");
+        String path = RESOURCE_BASE + context.get("path").value();
 
         return new Level(path, tileSet, spawnLocation);
     }
