@@ -12,6 +12,7 @@ import com.suhaib.game.input.UserInput;
 import com.suhaib.game.input.UserInputDefinition;
 import com.suhaib.game.level.Level;
 import com.suhaib.game.math.RenderPosition;
+import com.suhaib.game.math.Vector2;
 import com.suhaib.game.render.Camera;
 import com.suhaib.game.render.Renderer;
 import com.suhaib.game.render.Window;
@@ -72,16 +73,15 @@ public class Game implements Runnable {
 				.build();
 		level = index.load(Level.class, "level_1_1");
 
-		RenderPosition playerPosition = level.spawnLocation().renderPosition();
-		long threshold = playerPosition.y();
+		long threshold = level.spawnLocation().worldPosition().y + 2 * 32 * 16;
 
 		UnaryOperator<Long> relu = v -> v <= threshold ? threshold : v;
 
-		camera = new Camera(WIDTH, HEIGHT, rp -> new RenderPosition(rp.x(), relu.apply(rp.y())));
+		camera = new Camera(new RenderPosition(WIDTH, HEIGHT).worldPosition(), v -> new Vector2(v.x, relu.apply(v.y)));
 
 		renderer = new Renderer(display, camera);
 
-		player = new Player((int) playerPosition.x(), (int) playerPosition.y(), Sprite.mario, level, keys);
+		player = new Player(level.spawnLocation().worldPosition(), Sprite.mario, level, keys);
 	}
 
 	public synchronized void start() {
@@ -105,7 +105,7 @@ public class Game implements Runnable {
 
 	private void render() {
 		display.clear();
-		camera.setCameraPosition(player.getRenderPosition());
+		camera.setCameraFollow(player.position());
 		renderer.render(level);
 		player.render(renderer);
 		window.display(display.pixels);

@@ -5,6 +5,8 @@ import com.suhaib.game.graphics.sprite.Sprite;
 import com.suhaib.game.level.Level;
 import com.suhaib.game.math.RenderPosition;
 import com.suhaib.game.math.TilePosition;
+import com.suhaib.game.math.Vector2;
+import com.suhaib.game.render.Constants;
 import com.suhaib.game.render.Renderer;
 
 public class Mob extends Entity {
@@ -23,32 +25,35 @@ public class Mob extends Entity {
 	protected boolean check = true;
 	protected boolean jump_check = true;
 
-	protected int sx = 0;
-	protected int sy = 0;
+	protected Vector2 velocity = new Vector2(0, 0);
 
-	public Mob(int x, int y, Sprite[] sprite, Level level) {
-		super(x, y, sprite, level);
+	public Mob(Vector2 position, Sprite[] sprite, Level level) {
+		super(position, sprite, level);
 	}
 
 	public void render(Renderer renderer) {
 
 	}
 
-	public void move(int xMove, int yMove) {
+	// TODO(suhaibnk): why cant this me velocity
+	// TODO(suhaibnk): why does it need to separate x and y component
+	public void move(long xMove, long yMove) {
 		if (xMove != 0 && yMove != 0) {
 			move(xMove, 0);
 			move(0, yMove);
 			return;
 		}
-		if (!collision(x + xMove, y + yMove)) {
-			x += xMove;
-			y += yMove;
+		Vector2 move = new Vector2(xMove, yMove);
+		if (!collision(Vector2.add(position, move))) {
+			position.add(move);
 		}
 
 	}
 
-	public boolean collision(int x, int y) {
-		RenderPosition origin = new RenderPosition(x, y);
+	// TODO(suhaibnk): some calculations here are on render position, which is incorrect
+	// Change this when collision system is implemented
+	public boolean collision(Vector2 position) {
+		RenderPosition origin = position.renderPosition();
 
 		long[] dx = { 0, 1, 1, 0 };
 		long[] dy = { 0, 0, 1, 1 };

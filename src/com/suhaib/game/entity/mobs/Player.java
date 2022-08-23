@@ -4,6 +4,7 @@ import com.suhaib.game.graphics.sprite.Sprite;
 import com.suhaib.game.input.GameInput;
 import com.suhaib.game.level.Level;
 import com.suhaib.game.math.RenderPosition;
+import com.suhaib.game.math.Vector2;
 import com.suhaib.game.render.Renderer;
 
 import static com.suhaib.game.input.UserInput.*;
@@ -17,8 +18,8 @@ public class Player extends Mob {
 	private int updating = 0;
 	private boolean check = true;
 
-	public Player(int x, int y, Sprite[] sprite, Level level, GameInput gameInput) {
-		super(x, y, sprite, level);
+	public Player(Vector2 position, Sprite[] sprite, Level level, GameInput gameInput) {
+		super(position, sprite, level);
 		this.gameInput = gameInput;
 	}
 
@@ -73,7 +74,7 @@ public class Player extends Mob {
 				currentSprite = Sprite.mario[11];
 			}
 		}
-		renderer.renderSprite(x, y, currentSprite);
+		renderer.renderSprite(position, currentSprite);
 	}
 
 	public void update() {
@@ -84,8 +85,8 @@ public class Player extends Mob {
 		if (!left && right) {
 			if (direction == 1) {
 				sliding = true;
-				if (updating % 3 == 0) sx+=2;
-				if (sx == 0) {
+				if (updating % 3 == 0) velocity.x += 64;
+				if (velocity.x == 0) {
 					check = true;
 				}
 				else {
@@ -94,24 +95,24 @@ public class Player extends Mob {
 			}
 			if (check) {
 				sliding = false;
-				sx = 1;
+				velocity.x = 32;
 				direction = 0;
 				check = false;
 			}
 			if (gameInput.isDown(RUN)) {
-				if (updating % 13 == 0) sx++;
-				if (sx > 4) sx = 4;
+				if (updating % 13 == 0) velocity.x += 16;
+				if (velocity.x > 4) velocity.x = 86;
 			}
 			else {
-				sx = 1;
+				velocity.x = 32;
 			}
 		}
 
 		if (!right && left) {
 			if (direction == 0) {
 				sliding = true;
-				if (updating % 3 == 0) sx-=2;
-				if (sx == 0) {
+				if (updating % 3 == 0) velocity.x -= 64;
+				if (velocity.x == 0) {
 					check = true;
 				}
 				else {
@@ -120,48 +121,48 @@ public class Player extends Mob {
 			}
 			if (check) {
 				sliding = false;
-				sx = -1;
+				velocity.x = -32;
 				direction = 1;
 				check = false;
 			}
 			if (run) {
-				if (updating % 13 == 0) sx--;
-				if (sx < -4) sx = -4;
+				if (updating % 13 == 0) velocity.x -= 32;
+				if (velocity.x < -4) velocity.x = -86;
 			}
 			else {
-				sx = -1;
+				velocity.x = -32;
 			}
 		}
 
 		if (right && left) {
-			if (sx > 0) {
-				if (updating % 13 == 0) sx--;
-				if (sx < 0) sx = 0;
+			if (velocity.x > 0) {
+				if (updating % 13 == 0) velocity.x -= 32;
+				if (velocity.x < 0) velocity.x = 0;
 			}
-			if (sx < 0) {
-				if (updating % 13 == 0) sx++;
-				if (sx > 0) sx = 0;
+			if (velocity.x < 0) {
+				if (updating % 13 == 0) velocity.x += 32;
+				if (velocity.x > 0) velocity.x = 0;
 			}
 			check = true;
 		}
 
 		if (!right && !left) {
-			if (sx > 0) {
-				if (updating % 13 == 0) sx--;
-				if (sx < 0) sx = 0;
+			if (velocity.x > 0) {
+				if (updating % 13 == 0) velocity.x -= 32;
+				if (velocity.x < 0) velocity.x = 0;
 			}
-			if (sx < 0) {
-				if (updating % 13 == 0) sx++;
-				if (sx > 0) sx = 0;
+			if (velocity.x < 0) {
+				if (updating % 13 == 0) velocity.x += 32;
+				if (velocity.x > 0) velocity.x = 0;
 			}
 			check = true;
 		}
-		// sy = 0;
+		// velocity.y = 0;
 		if (jump) {
 			if (!jump_check) {
-				if (sy == 0) {
+				if (velocity.y == 0) {
 					jump_check = true;
-					sy = 6;
+					velocity.y = 6 * 32;
 				}
 			}
 
@@ -169,51 +170,51 @@ public class Player extends Mob {
 
 		if (jump_check) {
 			if (updating % 4 == 0) {
-				sy--;
+				velocity.y -= 16;
 			}
 			if (!jump) {
-				if (sy > 0) {
-					sy = 0;
+				if (velocity.y > 0) {
+					velocity.y = 0;
 				}
 				else {
-					if (updating % 8 == 0) sy--;
+					if (updating % 8 == 0) velocity.y -= 32;
 				}
 			}
 
-			if (collision(x, y + sy)) {
-				if (sy < 0) jump_check = false;
+			if (collision(Vector2.add(position, velocity.up()))) {
+				if (velocity.y < 0) jump_check = false;
 				else jump_check = true;
-				sy = 0;
+				velocity.y = 0;
 			}
 		}
 		else {
-			sy--;
-			if (collision(x, y + sy)) {
-				if (sy > 0) jump_check = false;
+			velocity.y -= 32;
+			if (collision(Vector2.add(position, velocity.up()))) {
+				if (velocity.y > 0) jump_check = false;
 				else jump_check = true;
-				sy = 0;
+				velocity.y = 0;
 			}
 		}
 
-		if (sx == 0 && sy == 0) {
+		if (velocity.x == 0 && velocity.y == 0) {
 			moving = false;
 			jumping = false;
 		}
-		else if (sy != 0) {
+		else if (velocity.y != 0) {
 			jumping = true;
 			moving = false;
 		}
-		else if (sx != 0 && sy == 0) {
+		else if (velocity.x != 0 && velocity.y == 0) {
 			moving = true;
 			jumping = false;
 		}
 
 
-		move(sx, sy);
+		move(velocity.x, velocity.y);
 	}
 
-	public RenderPosition getRenderPosition() {
-		return new RenderPosition(x, y);
+	public RenderPosition renderPosition() {
+		return position.renderPosition();
 	}
 
 }

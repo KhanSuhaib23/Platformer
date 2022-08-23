@@ -7,6 +7,7 @@ import com.suhaib.game.level.Level;
 import com.suhaib.game.level.tile.Tile;
 import com.suhaib.game.math.RenderPosition;
 import com.suhaib.game.math.TilePosition;
+import com.suhaib.game.math.Vector2;
 
 public class Renderer {
     private final Display display;
@@ -18,8 +19,8 @@ public class Renderer {
     }
 
     public void render(Level level) {
-        int xScroll = (int) camera.cameraPosition().x();
-        int yScroll = (int) camera.cameraPosition().y();
+        int xScroll = (int) camera.cameraPosition().renderPosition().x();
+        int yScroll = (int) camera.cameraPosition().renderPosition().y();
 
         int x0 = xScroll / 16;
         int x1 = (xScroll + display.WIDTH) / 16;
@@ -35,13 +36,6 @@ public class Renderer {
                 }
             }
         }
-//
-//        for (int y = 0; y < level.height(); y++) {
-//            for (int x = 0; x < level.width(); x++) {
-//                Tile tile = level.getTile(new TilePosition(x, y));
-//                display.pixels[x + y * display.WIDTH] = tile.solid() ? 0 : 0xffffffff;
-//            }
-//        }
     }
 
     public void renderTile(int xPosition, int yPosition, Tile tile) {
@@ -60,11 +54,12 @@ public class Renderer {
         }
     }
 
-    public void renderSprite(int xPosition, int yPosition, Sprite sprite) {
-        xPosition -= camera.cameraPosition().x();
-        yPosition -= camera.cameraPosition().y();
-        int xAbsolute;
-        int yAbsolute;
+    public void renderSprite(Vector2 position, Sprite sprite) {
+        RenderPosition renderPosition = Vector2.sub(position, camera.cameraPosition()).renderPosition();
+        long xPosition = renderPosition.x();
+        long yPosition = renderPosition.y();
+        long xAbsolute;
+        long yAbsolute;
         for (int y = 0; y < sprite.size; y++) {
             yAbsolute = y + yPosition;
             if (yAbsolute < -16 || yAbsolute >= display.HEIGHT) break;
@@ -74,7 +69,7 @@ public class Renderer {
                 if (xAbsolute < -16 || xAbsolute >= display.WIDTH) break;
                 if (xAbsolute < 0) xAbsolute = 0;
                 int color = sprite.pixels[x + y * sprite.size];
-                if (color != 0xffff00ff) display.pixels[xAbsolute + yAbsolute * display.WIDTH] = color;
+                if (color != 0xffff00ff) display.pixels[(int) (xAbsolute + yAbsolute * display.WIDTH)] = color;
             }
         }
     }

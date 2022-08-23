@@ -1,41 +1,36 @@
 package com.suhaib.game.render;
 
 import com.suhaib.game.math.RenderPosition;
+import com.suhaib.game.math.Vector2;
 
 import java.util.function.UnaryOperator;
 
 public class Camera {
-    private final int width;
-    private final int height;
-    private final UnaryOperator<RenderPosition> renderPosMapper;
-    private RenderPosition cameraPosition;
+    private final Vector2 frameDimension;
+    private final Vector2 halfFrameDimension;
+    private final UnaryOperator<Vector2> cameraPositionMapper;
+    private Vector2 cameraPosition;
 
-    public Camera(int width, int height, UnaryOperator<RenderPosition> renderPosMapper) {
-        this.width = width;
-        this.height = height;
-        this.renderPosMapper = renderPosMapper;
+    public Camera(Vector2 frameDimension, UnaryOperator<Vector2> cameraPositionMapper) {
+        this.frameDimension = frameDimension;
+        this.halfFrameDimension = new Vector2(frameDimension.x / 2, frameDimension.y / 2);
+        this.cameraPositionMapper = cameraPositionMapper;
     }
 
-    public void setCameraPosition(RenderPosition cameraFollow) {
-        RenderPosition modifiedCameraFollow = renderPosMapper.apply(cameraFollow);
-        cameraPosition = new RenderPosition(Math.max(modifiedCameraFollow.x() - width / 2, 0), Math.max(modifiedCameraFollow.y() - height / 2, 0));
+    // TODO(suhaibnk): reintroduce some way to modify camera position relative to player position
+    public void setCameraFollow(Vector2 cameraFollow) {
+        cameraPosition = Vector2.bound(Vector2.sub(cameraFollow, halfFrameDimension));
     }
 
-    public RenderPosition getCameraLocalPosition(RenderPosition worldPosition) {
-        return new RenderPosition(worldPosition.x() - cameraPosition.x(), worldPosition.y() - cameraPosition.y());
+    public Vector2 getCameraLocalPosition(Vector2 worldPosition) {
+        return Vector2.sub(worldPosition, cameraPosition);
     }
 
-    public RenderPosition cameraPosition() {
+    public Vector2 cameraPosition() {
         return cameraPosition;
     }
 
-//
-//    public RenderPosition getCameraTopLeft(RenderPosition worldPosition) {
-//        return new RenderPosition(worldPosition.x() - width / 2, worldPosition.y() - height / 2);
-//    }
-
-    public RenderPosition getCameraTopLeft(RenderPosition worldPosition) {
-        RenderPosition renderPosition = renderPosMapper.apply(worldPosition);
-        return new RenderPosition(Math.max(renderPosition.x() - width / 2, 0), Math.max(renderPosition.y() - height / 2, 0));
+    public RenderPosition cameraRenderPosition() {
+        return cameraPosition.renderPosition();
     }
 }
