@@ -48,10 +48,18 @@ public class Mob extends Entity {
 	}
 
 	public boolean collision(int x, int y) {
-		RenderPosition renderPosition = new RenderPosition(x, y);
-		TilePosition tilePosition = renderPosition.tilePosition();
-		if (level.getTile(tilePosition).solid()) {
-			return true;
+		RenderPosition origin = new RenderPosition(x, y);
+
+		long[] dx = { 0, 1, 1, 0 };
+		long[] dy = { 0, 0, 1, 1 };
+
+		for (int c = 0; c < 4; c++) {
+			RenderPosition corner = new RenderPosition(origin.x() + dx[c] * sprite.length, origin.y() + dy[c] * sprite.length);
+			TilePosition tilePosition = corner.tilePosition();
+
+			if (level.getTile(tilePosition).solid()) {
+				return true;
+			}
 		}
 		return false;
 	}
