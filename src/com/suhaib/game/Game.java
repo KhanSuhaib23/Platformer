@@ -6,8 +6,10 @@ import java.awt.image.DataBufferInt;
 import java.util.function.UnaryOperator;
 
 import com.suhaib.game.entity.mobs.Player;
+import com.suhaib.game.graphics.Animation;
 import com.suhaib.game.graphics.Display;
 import com.suhaib.game.graphics.sprite.Sprite;
+import com.suhaib.game.graphics.sprite.SpriteSheet;
 import com.suhaib.game.input.UserInput;
 import com.suhaib.game.input.UserInputDefinition;
 import com.suhaib.game.level.Level;
@@ -70,6 +72,8 @@ public class Game implements Runnable {
 		index = ResourceIndex.builder(Constants.META_BASE + "resource.meta")
 				.loader(Level.class, new LevelLoader())
 				.loader(TileSet.class, new TileSetLoader())
+				.loader(SpriteSheet.class, new SpriteSheetLoader())
+				.loader(Animation.class, new AnimationLoader())
 				.build();
 		level = index.load(Level.class, "level_1_1");
 
@@ -81,7 +85,7 @@ public class Game implements Runnable {
 
 		renderer = new Renderer(display, camera);
 
-		player = new Player(level.spawnLocation().worldPosition(), Sprite.mario, level, keys);
+		player = new Player(level.spawnLocation().worldPosition(), index.load(Animation.class, "mario_walk"), level, keys);
 	}
 
 	public synchronized void start() {

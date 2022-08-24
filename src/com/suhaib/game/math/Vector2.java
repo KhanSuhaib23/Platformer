@@ -49,4 +49,11 @@ public class Vector2 {
         return new Vector2(x, 0);
     }
 
+    @Override
+    public String toString() {
+        return "Vector2[" +
+                "x=" + x +
+                ", y=" + y +
+                ']';
+    }
 }

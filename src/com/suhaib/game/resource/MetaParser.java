@@ -3,6 +3,7 @@ package com.suhaib.game.resource;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class MetaParser {
     enum TokenType {
@@ -234,6 +235,7 @@ public class MetaParser {
         Node get(String key);
         Node get(int index);
         <T> T value();
+        <V> Stream<V> stream();
         int size();
     }
 
@@ -262,6 +264,11 @@ public class MetaParser {
         @Override
         public T value() {
             return resourceValue.val();
+        }
+
+        @Override
+        public Stream<T> stream() {
+            return Stream.of(resourceValue.val());
         }
 
         @Override
@@ -299,6 +306,11 @@ public class MetaParser {
         }
 
         @Override
+        public Stream<Map.Entry<String, Node>> stream() {
+            return objectMap.entrySet().stream();
+        }
+
+        @Override
         public int size() {
             return objectMap.size();
         }
@@ -333,6 +345,11 @@ public class MetaParser {
         @Override
         public <T> T value() {
             throw new RuntimeException("Cannot get by index on a Array node");
+        }
+
+        @Override
+        public Stream<Node> stream() {
+            return arrayList.stream();
         }
 
         @Override

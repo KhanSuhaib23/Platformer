@@ -1,5 +1,6 @@
 package com.suhaib.game.entity.mobs; // right = 0, left = 1, 
 
+import com.suhaib.game.graphics.Animation;
 import com.suhaib.game.graphics.sprite.Sprite;
 import com.suhaib.game.input.GameInput;
 import com.suhaib.game.level.Level;
@@ -12,74 +13,72 @@ import static com.suhaib.game.input.UserInput.*;
 public class Player extends Mob {
 
 	private GameInput gameInput;
-	private int animation = 0;
 	private boolean jump_check = false;
 	private int jumpSpeedY = 10;
 	private int updating = 0;
 	private boolean check = true;
 
-	public Player(Vector2 position, Sprite[] sprite, Level level, GameInput gameInput) {
-		super(position, sprite, level);
+	public Player(Vector2 position, Animation animation, Level level, GameInput gameInput) {
+		super(position, animation, level);
 		this.gameInput = gameInput;
 	}
 
 
 	public void render(Renderer renderer) {
-		Sprite currentSprite = Sprite.mario[0];
-		if (moving) {
-			if (direction == 0) {
-				if (animation % 12 < 4) {
-					currentSprite = Sprite.mario[2];
-				}
-				else if (animation % 12 < 8) {
-					currentSprite = Sprite.mario[4];
-				}
-				else {
-					currentSprite = Sprite.mario[6];
-				}
-			}
-			if (direction == 1) {
-				if (animation % 12 < 4) {
-					currentSprite = Sprite.mario[3];
-				}
-				else if (animation % 12 < 8) {
-					currentSprite = Sprite.mario[5];
-				}
-				else {
-					currentSprite = Sprite.mario[7];
-				}
-			}
-		}
-		else {
-			if (direction == 0) {
-				currentSprite = Sprite.mario[0];
-			}
-			else if (direction == 1) {
-				currentSprite = Sprite.mario[1];
-			}
-		}
-		if (sliding) {
-			if (direction == 0) {
-				currentSprite = Sprite.mario[9];
-			}
-			else {
-				currentSprite = Sprite.mario[8];
-			}
-		}
-		if (jumping) {
-			if (direction == 0) {
-				currentSprite = Sprite.mario[10];
-			}
-			else {
-				currentSprite = Sprite.mario[11];
-			}
-		}
-		renderer.renderSprite(position, currentSprite);
+//		Sprite currentSprite = Sprite.mario[0];
+//		if (moving) {
+//			if (direction == 0) {
+//				if (animation % 12 < 4) {
+//					currentSprite = Sprite.mario[2];
+//				}
+//				else if (animation % 12 < 8) {
+//					currentSprite = Sprite.mario[4];
+//				}
+//				else {
+//					currentSprite = Sprite.mario[6];
+//				}
+//			}
+//			if (direction == 1) {
+//				if (animation % 12 < 4) {
+//					currentSprite = Sprite.mario[3];
+//				}
+//				else if (animation % 12 < 8) {
+//					currentSprite = Sprite.mario[5];
+//				}
+//				else {
+//					currentSprite = Sprite.mario[7];
+//				}
+//			}
+//		}
+//		else {
+//			if (direction == 0) {
+//				currentSprite = Sprite.mario[0];
+//			}
+//			else if (direction == 1) {
+//				currentSprite = Sprite.mario[1];
+//			}
+//		}
+//		if (sliding) {
+//			if (direction == 0) {
+//				currentSprite = Sprite.mario[9];
+//			}
+//			else {
+//				currentSprite = Sprite.mario[8];
+//			}
+//		}
+//		if (jumping) {
+//			if (direction == 0) {
+//				currentSprite = Sprite.mario[10];
+//			}
+//			else {
+//				currentSprite = Sprite.mario[11];
+//			}
+//		}
+		renderer.renderSprite(position, animation.getFrame());
 	}
 
 	public void update() {
 		boolean left = gameInput.isDown(LEFT), right = gameInput.isDown(RIGHT), run = gameInput.isDown(RUN), jump = gameInput.isDown(JUMP);
-		animation++;
 		updating++;
 		if (updating >= 10000) updating = 0;
 		if (!left && right) {
@@ -209,6 +208,7 @@ public class Player extends Mob {
 			jumping = false;
 		}
 
+		animation.update((int) Math.abs(velocity.x), velocity.x >= 0 ? Animation.Direction.RIGHT : Animation.Direction.LEFT);
 
 		move(velocity.x, velocity.y);
 	}

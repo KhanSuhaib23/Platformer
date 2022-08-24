@@ -59,15 +59,15 @@ public class Renderer {
         long yPosition = renderPosition.y();
         long xAbsolute;
         long yAbsolute;
-        for (int y = 0; y < sprite.size; y++) {
+        for (int y = 0; y < sprite.height; y++) {
             yAbsolute = y + yPosition;
             if (yAbsolute < -16 || yAbsolute >= display.HEIGHT) break;
             if (yAbsolute < 0) yAbsolute = 0;
-            for (int x = 0; x < sprite.size; x++) {
+            for (int x = 0; x < sprite.width; x++) {
                 xAbsolute = x + xPosition;
                 if (xAbsolute < -16 || xAbsolute >= display.WIDTH) break;
                 if (xAbsolute < 0) xAbsolute = 0;
-                int color = sprite.pixels[x + y * sprite.size];
+                int color = sprite.pixels.get(x, y);
                 if (color != 0xffff00ff) display.pixels[(int) (xAbsolute + yAbsolute * display.WIDTH)] = color;
             }
         }

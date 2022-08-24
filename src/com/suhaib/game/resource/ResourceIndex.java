@@ -22,12 +22,14 @@ public class ResourceIndex {
     }
 
     private final Map<ResourceKey, MetaParser.Node> resourceIndex;
+    private final Map<ResourceKey, Object> loadedResource;
     private final Map<Class, ResourceLoader> resourceLoaders;
 
     public ResourceIndex(Builder builder) {
         try {
             Map<String, Class> classMap = new HashMap<>();
             this.resourceLoaders = builder.loaderMap;
+            loadedResource = new HashMap<>();
 
             builder.loaderMap.entrySet().stream()
                     .forEach(e -> {
@@ -58,7 +60,15 @@ public class ResourceIndex {
     }
 
     public <T> T load(Class<T> clazz, String name) {
-        return (T) resourceLoaders.get(clazz).load(resourceIndex.get(new ResourceKey(clazz, name)), this);
+        ResourceKey key = new ResourceKey(clazz, name);
+
+        if (loadedResource.containsKey(key)) {
+            return (T) loadedResource.get(key);
+        } else {
+            Object resource = resourceLoaders.get(clazz).load(resourceIndex.get(key), this);
+            loadedResource.put(key, resource);
+            return (T) resource;
+        }
     }
 
     public static Builder builder(String metaPath) {

@@ -1,6 +1,7 @@
 package com.suhaib.game.entity.mobs;
 
 import com.suhaib.game.entity.Entity;
+import com.suhaib.game.graphics.Animation;
 import com.suhaib.game.graphics.sprite.Sprite;
 import com.suhaib.game.level.Level;
 import com.suhaib.game.math.RenderPosition;
@@ -27,8 +28,8 @@ public class Mob extends Entity {
 
 	protected Vector2 velocity = new Vector2(0, 0);
 
-	public Mob(Vector2 position, Sprite[] sprite, Level level) {
-		super(position, sprite, level);
+	public Mob(Vector2 position, Animation animation, Level level) {
+		super(position, animation, level);
 	}
 
 	public void render(Renderer renderer) {
@@ -59,7 +60,7 @@ public class Mob extends Entity {
 		long[] dy = { 0, 0, 1, 1 };
 
 		for (int c = 0; c < 4; c++) {
-			RenderPosition corner = new RenderPosition(origin.x() + dx[c] * sprite.length, origin.y() + dy[c] * sprite.length);
+			RenderPosition corner = new RenderPosition(origin.x() + dx[c] * animation.getFrame().width, origin.y() + dy[c] * animation.getFrame().height);
 			TilePosition tilePosition = corner.tilePosition();
 
 			if (level.getTile(tilePosition).solid()) {
