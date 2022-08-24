@@ -1,138 +1,86 @@
 upper_day: TileSet
     path = 'tiles.png'
     tile =
-        + width = 16
-        + height = 16
-        end
+        .width = 16 .height = 16 end
     tiles =
-        -
-            + x = 0
-            + y = 0
-            + solid = true
-            end
-        -
-            + x = 1
-            + y = 0
-            + solid = false
-            end
-        end
+        | .x = 0 .y = 0 .solid = true  .end
+        | .x = 1 .y = 0 .solid = false .end
+        | end
 end
 
 level_1_1: Level
     path = 'level_1_1.lvl'
     tileset = upper_day
-    player_spawn =
-        + x = 10
-        + y = 2
-        end
+    player_spawn = .x = 10 .y = 2 .end
 end
 
 mario_spritesheet: SpriteSheet
     path = 'sprite.png'
-    sprite =
-        + width = 16
-        + height = 16
-        end
+    sprite = .width = 16 .height = 16 .end
     sprites =
-        + standing_right =
-            + x = 0
-            + y = 0
-            end
-        + walking_right_0 =
-            + x = 2
-            + y = 0
-            end
-        + walking_right_1 =
-            + x = 4
-            + y = 0
-            end
-        + walking_right_2 =
-            + x = 6
-            + y = 0
-            end
-        + stopping_right =
-            + x = 0
-            + y = 1
-            end
-        + jumping_right =
-            + x = 2
-            + y = 1
-            end
-        + standing_left =
-            + x = 1
-            + y = 0
-            end
-        + walking_left_0 =
-            + x = 3
-            + y = 0
-            end
-        + walking_left_1 =
-            + x = 5
-            + y = 0
-            end
-        + walking_left_2 =
-            + x = 7
-            + y = 0
-            end
-        + stopping_left =
-            + x = 1
-            + y = 1
-            end
-        + jumping_left =
-            + x = 3
-            + y = 1
-            end
-        end
+        .standing_right =
+            .x = 0 .y = 0 .end
+        .walking_right_0 =
+            .x = 2 .y = 0 .end
+        .walking_right_1 =
+            .x = 4 .y = 0 .end
+        .walking_right_2 =
+            .x = 6 .y = 0 .end
+        .stopping_right =
+            .x = 0 .y = 1 .end
+        .jumping_right =
+            .x = 2 .y = 1 .end
+        .standing_left =
+            .x = 1 .y = 0 .end
+        .walking_left_0 =
+            .x = 3 .y = 0 .end
+        .walking_left_1 =
+            .x = 5 .y = 0 .end
+        .walking_left_2 =
+            .x = 7 .y = 0 .end
+        .stopping_left =
+            .x = 1 .y = 1 .end
+        .jumping_left =
+            .x = 3 .y = 1 .end
+        .end
 end
 
 mario_stand: Animation
     spritesheet = mario_spritesheet
     sprites =
-        + right =
-            - standing_right
-            end
-        + left =
-            - standing_left
-            end
-        end
+        .right =
+            | standing_right | end
+        .left =
+            | standing_left | end
+        .end
 end
 
 mario_walk: Animation
     spritesheet = mario_spritesheet
     sprites =
-        + right =
-            - walking_right_0
-            - walking_right_1
-            - walking_right_2
-            end
-        + left =
-            - walking_left_0
-            - walking_left_1
-            - walking_left_2
-            end
-        end
+        .right =
+            | walking_right_0 | walking_right_1 | walking_right_2 | end
+        .left =
+            | walking_left_0 | walking_left_1 | walking_left_2 | end
+        .end
 end
 
 mario_stop: Animation
     spritesheet = mario_spritesheet
     sprites =
-        + right =
-            - stopping_right
-            end
-        + left =
-            - stopping_left
-            end
-        end
+        .right =
+            | stopping_right | end
+        .left =
+            | stopping_left | end
+        .end
 end
 
 mario_jumping: Animation
     spritesheet = mario_spritesheet
     sprites =
-        + right =
-            - jumping_right
-            end
-        + left =
-            - jumping_left
-            end
-        end
+        .right =
+            | jumping_right | end
+        .left =
+            | jumping_left | end
+        .end
 end

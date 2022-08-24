@@ -433,15 +433,20 @@ public class MetaParser {
         Token token;
 
         while ((token = nextToken()).type() == TokenType.OBJECT) {
-            token = expectToken(TokenType.IDENTIFIER);
+            token = nextToken();
+
+            if (token.type() == TokenType.END) {
+                break;
+            }
+
+            ensure(token, TokenType.IDENTIFIER);
+
             String name = tokenOfType(token, IdentifierToken.class).val();
             expectToken(TokenType.ASSIGN);
             Node node = parseNode();
 
             nodes.put(name, node);
         }
-
-        ensure(token, TokenType.END);
 
         return new ObjectNode(nodes);
     }
@@ -451,12 +456,18 @@ public class MetaParser {
         Token token;
 
         while ((token = nextToken()).type() == TokenType.ARRAY) {
+            token = nextToken();
+
+            if (token.type() == TokenType.END) {
+                break;
+            }
+
+            pushToken(token);
+
             Node node = parseNode();
 
             nodes.add(node);
         }
-
-        ensure(token, TokenType.END);
 
         return new ArrayNode(nodes);
     }
@@ -528,8 +539,8 @@ public class MetaParser {
         switch (ch) {
             case ':': return new SymbolToken(TokenType.COLON);
             case '=': return new SymbolToken(TokenType.ASSIGN);
-            case '-': return new SymbolToken(TokenType.ARRAY);
-            case '+': return new SymbolToken(TokenType.OBJECT);
+            case '|': return new SymbolToken(TokenType.ARRAY);
+            case '.': return new SymbolToken(TokenType.OBJECT);
             case '\'': {
                 StringBuilder sb = new StringBuilder();
                 while ((ch = file[pos++]) != '\'') {
@@ -582,7 +593,7 @@ public class MetaParser {
                     return new IntegerToken(Integer.parseInt(sb.toString()));
                 }
 
-                throw new RuntimeException("Unknown start encountered " + ch);
+                throw new RuntimeException("Unknown start encountered " + ch + " at pos " + pos);
             }
         }
     }
