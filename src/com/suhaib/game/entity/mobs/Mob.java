@@ -61,17 +61,17 @@ public class Mob extends Entity {
 	// TODO(suhaibnk): some calculations here are on render position, which is incorrect
 	// Change this when collision system is implemented
 	public boolean collision(Vector2 position) {
-		List<Vector2> corners = Arrays.stream(collider.corners())
-				.map(v -> Vector2.add(v, position))
-				.collect(Collectors.toList());
+		BoxCollider mobCollider = BoxCollider.relativeTo(this.collider, position);
 
-		for (Vector2 corner : corners) {
-			TilePosition tilePosition = corner.renderPosition().tilePosition();
-
-			if (level.getTile(tilePosition).solid()) {
+		for (BoxCollider collider : level.colliders()) {
+			if (BoxCollider.doesCollide(mobCollider, collider)) {
+				System.out.println(mobCollider);
+				System.out.println(collider);
+				System.out.println("-----------------------------");
 				return true;
 			}
 		}
+
 		return false;
 	}
 

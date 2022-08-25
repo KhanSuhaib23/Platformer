@@ -40,6 +40,10 @@ public class Renderer {
                 }
             }
         }
+
+        for (BoxCollider collider : level.colliders()) {
+            renderCollisionBox(new Vector2(0, 0), collider);
+        }
     }
 
     public void renderTile(int xPosition, int yPosition, Tile tile) {
@@ -102,7 +106,7 @@ public class Renderer {
                 
                 for (int y = y0; y <= y1; ++y) {
                     yAbsolute = y + yPosition;
-                    if (yAbsolute < -16 || yAbsolute >= display.HEIGHT) break;
+                    if (yAbsolute < -16 || yAbsolute >= display.HEIGHT) continue;
                     yAbsolute = Math.max(yAbsolute, 0);
 
                     display.pixels[(int) (xAbsolute + yAbsolute * display.WIDTH)] = 0xff00ff00;
@@ -119,7 +123,7 @@ public class Renderer {
 
                 for (int x = x0; x <= x1; ++x) {
                     xAbsolute = x + xPosition;
-                    if (xAbsolute < -16 || yAbsolute >= display.WIDTH) break;
+                    if (xAbsolute < -16 || xAbsolute >= display.WIDTH) continue;
                     xAbsolute = Math.max(xAbsolute, 0);
 
                     display.pixels[(int) (xAbsolute + yAbsolute * display.WIDTH)] = 0xff00ff00;
