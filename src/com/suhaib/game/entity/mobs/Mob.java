@@ -32,7 +32,7 @@ public class Mob extends Entity {
 	protected boolean jump_check = true;
 
 	protected Vector2 velocity = new Vector2(0, 0);
-	private BoxCollider collider;
+	protected BoxCollider collider;
 
 	public Mob(Vector2 position, Animation animation, BoxCollider collider, Level level) {
 		super(position, animation, level);

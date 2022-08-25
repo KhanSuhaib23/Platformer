@@ -8,8 +8,8 @@ public record BoxCollider(Vector2 p1, Vector2 p2) {
         return new Vector2[] {
             p1,
             new Vector2(p2.x, p1.y),
-            new Vector2(p1.x, p2.y),
-            p2
+            p2,
+            new Vector2(p1.x, p2.y)
         };
     }
 }

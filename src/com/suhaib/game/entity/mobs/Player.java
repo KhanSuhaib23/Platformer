@@ -81,6 +81,7 @@ public class Player extends Mob {
 //			}
 //		}
 		renderer.renderSprite(position, animation.getFrame());
+		renderer.renderCollisionBox(position, collider);
 	}
 
 	public void update() {
