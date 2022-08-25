@@ -6,6 +6,8 @@ import com.suhaib.game.input.GameInput;
 import com.suhaib.game.level.Level;
 import com.suhaib.game.math.RenderPosition;
 import com.suhaib.game.math.Vector2;
+import com.suhaib.game.physics.BoxCollider;
+import com.suhaib.game.render.Constants;
 import com.suhaib.game.render.Renderer;
 
 import static com.suhaib.game.input.UserInput.*;
@@ -18,8 +20,12 @@ public class Player extends Mob {
 	private int updating = 0;
 	private boolean check = true;
 
+	private static final long xOffsetCollider = 3;
+
 	public Player(Vector2 position, Animation animation, Level level, GameInput gameInput) {
-		super(position, animation, level);
+		super(position, animation,
+				new BoxCollider(new Vector2(xOffsetCollider * Constants.RENDER_SCALE, 0),
+								new Vector2((16 - xOffsetCollider) * Constants.RENDER_SCALE, 16 * Constants.RENDER_SCALE)), level);
 		this.gameInput = gameInput;
 	}
 

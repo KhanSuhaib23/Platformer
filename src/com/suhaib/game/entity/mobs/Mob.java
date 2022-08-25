@@ -7,8 +7,13 @@ import com.suhaib.game.level.Level;
 import com.suhaib.game.math.RenderPosition;
 import com.suhaib.game.math.TilePosition;
 import com.suhaib.game.math.Vector2;
+import com.suhaib.game.physics.BoxCollider;
 import com.suhaib.game.render.Constants;
 import com.suhaib.game.render.Renderer;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Mob extends Entity {
 
@@ -27,9 +32,11 @@ public class Mob extends Entity {
 	protected boolean jump_check = true;
 
 	protected Vector2 velocity = new Vector2(0, 0);
+	private BoxCollider collider;
 
-	public Mob(Vector2 position, Animation animation, Level level) {
+	public Mob(Vector2 position, Animation animation, BoxCollider collider, Level level) {
 		super(position, animation, level);
+		this.collider = collider;
 	}
 
 	public void render(Renderer renderer) {
@@ -54,14 +61,12 @@ public class Mob extends Entity {
 	// TODO(suhaibnk): some calculations here are on render position, which is incorrect
 	// Change this when collision system is implemented
 	public boolean collision(Vector2 position) {
-		RenderPosition origin = position.renderPosition();
+		List<Vector2> corners = Arrays.stream(collider.corners())
+				.map(v -> Vector2.add(v, position))
+				.collect(Collectors.toList());
 
-		long[] dx = { 0, 1, 1, 0 };
-		long[] dy = { 0, 0, 1, 1 };
-
-		for (int c = 0; c < 4; c++) {
-			RenderPosition corner = new RenderPosition(origin.x() + dx[c] * animation.getFrame().width, origin.y() + dy[c] * animation.getFrame().height);
-			TilePosition tilePosition = corner.tilePosition();
+		for (Vector2 corner : corners) {
+			TilePosition tilePosition = corner.renderPosition().tilePosition();
 
 			if (level.getTile(tilePosition).solid()) {
 				return true;
