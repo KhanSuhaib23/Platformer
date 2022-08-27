@@ -12,7 +12,11 @@ public class Vector2 {
     }
 
     public RenderPosition renderPosition() {
-        return new RenderPosition(x / Constants.RENDER_SCALE, y / Constants.RENDER_SCALE);
+        return new RenderPosition(Math.floorDiv(x, Constants.RENDER_SCALE), Math.floorDiv(y, Constants.RENDER_SCALE));
+    }
+
+    public TilePosition tilePosition() {
+        return new TilePosition(Math.floorDiv(x, Constants.RENDER_SCALE * Constants.TILE_SIZE), Math.floorDiv(y, Constants.RENDER_SCALE * Constants.TILE_SIZE));
     }
 
     public static Vector2 add(Vector2 v1, Vector2 v2) {

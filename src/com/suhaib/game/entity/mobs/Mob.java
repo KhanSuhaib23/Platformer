@@ -65,9 +65,6 @@ public class Mob extends Entity {
 
 		for (BoxCollider collider : level.colliders()) {
 			if (BoxCollider.doesCollide(mobCollider, collider)) {
-				System.out.println(mobCollider);
-				System.out.println(collider);
-				System.out.println("-----------------------------");
 				return true;
 			}
 		}
