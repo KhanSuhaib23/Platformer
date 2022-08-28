@@ -19,7 +19,7 @@ public class Camera {
 
     // TODO(suhaibnk): reintroduce some way to modify camera position relative to player position
     public void setCameraFollow(Vector2 cameraFollow) {
-        cameraPosition = Vector2.bound(Vector2.sub(cameraFollow, halfFrameDimension));
+        cameraPosition = Vector2.sub(cameraFollow, halfFrameDimension);
     }
 
     public Vector2 getCameraLocalPosition(Vector2 worldPosition) {

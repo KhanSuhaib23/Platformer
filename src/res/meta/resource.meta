@@ -11,7 +11,7 @@ end
 level_1_1: Level
     path = 'level_1_1.lvl'
     tileset = upper_day
-    player_spawn = .x = 10 .y = 2 .end
+    player_spawn = .x = 10 .y = 5 .end
 end
 
 mario_spritesheet: SpriteSheet

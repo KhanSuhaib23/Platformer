@@ -2,18 +2,12 @@ package com.suhaib.game.entity.mobs;
 
 import com.suhaib.game.entity.Entity;
 import com.suhaib.game.graphics.Animation;
-import com.suhaib.game.graphics.sprite.Sprite;
 import com.suhaib.game.level.Level;
-import com.suhaib.game.math.RenderPosition;
-import com.suhaib.game.math.TilePosition;
 import com.suhaib.game.math.Vector2;
 import com.suhaib.game.physics.BoxCollider;
-import com.suhaib.game.render.Constants;
 import com.suhaib.game.render.Renderer;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 public class Mob extends Entity {
 
@@ -32,7 +26,7 @@ public class Mob extends Entity {
 	protected boolean jump_check = true;
 
 	protected Vector2 velocity = new Vector2(0, 0);
-	protected BoxCollider collider;
+	public BoxCollider collider;
 
 	public Mob(Vector2 position, Animation animation, BoxCollider collider, Level level) {
 		super(position, animation, level);
@@ -43,33 +37,24 @@ public class Mob extends Entity {
 
 	}
 
-	// TODO(suhaibnk): why cant this me velocity
-	// TODO(suhaibnk): why does it need to separate x and y component
-	public void move(long xMove, long yMove) {
-		if (xMove != 0 && yMove != 0) {
-			move(xMove, 0);
-			move(0, yMove);
-			return;
-		}
-		Vector2 move = new Vector2(xMove, yMove);
-		if (!collision(Vector2.add(position, move))) {
-			position.add(move);
-		}
+	public Vector2 move() {
+		position.add(velocity);
 
+		return collision(position);
 	}
 
 	// TODO(suhaibnk): some calculations here are on render position, which is incorrect
 	// Change this when collision system is implemented
-	public boolean collision(Vector2 position) {
+	public Vector2 collision(Vector2 position) {
+		Vector2 adjust = new Vector2(0, 0);
 		BoxCollider mobCollider = BoxCollider.relativeTo(this.collider, position);
 
 		for (BoxCollider collider : level.colliders()) {
-			if (BoxCollider.doesCollide(mobCollider, collider)) {
-				return true;
-			}
+			Optional<Vector2> v = BoxCollider.howMuchCollision(mobCollider, collider);
+			v.ifPresent(x -> adjust.add(x));
 		}
 
-		return false;
+		return adjust;
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.suhaib.game.render;
 
+import com.suhaib.game.entity.mobs.Player;
 import com.suhaib.game.graphics.Display;
 import com.suhaib.game.graphics.sprite.Sprite;
 import com.suhaib.game.level.Level;
@@ -22,7 +23,7 @@ public class Renderer {
         this.camera = camera;
     }
 
-    public void render(Level level) {
+    public void render(Level level, Player player) {
         int xScroll = (int) camera.cameraPosition().renderPosition().x();
         int yScroll = (int) camera.cameraPosition().renderPosition().y();
 
@@ -42,7 +43,11 @@ public class Renderer {
         }
 
         for (BoxCollider collider : level.colliders()) {
-            renderCollisionBox(new Vector2(0, 0), collider);
+            renderCollisionBox(new Vector2(0, 0), collider, 0xff00ff00);
+        }
+
+        for (BoxCollider collider : level.colliders()) {
+            renderCollisionBox(new Vector2(0, 0), collider.expanded(player.collider), 0xff0000ff);
         }
     }
 
@@ -82,7 +87,7 @@ public class Renderer {
         }
     }
 
-    public void renderCollisionBox(Vector2 position, BoxCollider boxCollider) {
+    public void renderCollisionBox(Vector2 position, BoxCollider boxCollider, int color) {
         RenderPosition renderPosition = Vector2.sub(position, camera.cameraPosition()).renderPosition();
         RenderPosition[] corners = Arrays.stream(boxCollider.corners())
                 .map(v -> v.renderPosition())
@@ -109,7 +114,7 @@ public class Renderer {
                     if (yAbsolute < -16 || yAbsolute >= display.HEIGHT) continue;
                     yAbsolute = Math.max(yAbsolute, 0);
 
-                    display.pixels[(int) (xAbsolute + yAbsolute * display.WIDTH)] = 0xff00ff00;
+                    display.pixels[(int) (xAbsolute + yAbsolute * display.WIDTH)] = color;
                 }
             }
 

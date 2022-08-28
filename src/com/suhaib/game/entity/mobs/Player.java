@@ -81,7 +81,7 @@ public class Player extends Mob {
 //			}
 //		}
 		renderer.renderSprite(position, animation.getFrame());
-		renderer.renderCollisionBox(position, collider);
+		renderer.renderCollisionBox(position, collider, 0xffff0000);
 	}
 
 	public void update() {
@@ -186,20 +186,9 @@ public class Player extends Mob {
 					if (updating % 8 == 0) velocity.y -= 32;
 				}
 			}
-
-			if (collision(Vector2.add(position, velocity.up()))) {
-				if (velocity.y < 0) jump_check = false;
-				else jump_check = true;
-				velocity.y = 0;
-			}
 		}
 		else {
 			velocity.y -= 32;
-			if (collision(Vector2.add(position, velocity.up()))) {
-				if (velocity.y > 0) jump_check = false;
-				else jump_check = true;
-				velocity.y = 0;
-			}
 		}
 
 		if (velocity.x == 0 && velocity.y == 0) {
@@ -215,9 +204,19 @@ public class Player extends Mob {
 			jumping = false;
 		}
 
+
+		Vector2 adjust = move();
+
+		if (adjust.y < 0 && velocity.y < 0 && !jump) {
+			velocity.y = 0;
+			jump_check = false;
+		}
+
+
+		position.sub(adjust);
+
 		animation.update((int) Math.abs(velocity.x), velocity.x >= 0 ? Animation.Direction.RIGHT : Animation.Direction.LEFT);
 
-		move(velocity.x, velocity.y);
 	}
 
 	public RenderPosition renderPosition() {

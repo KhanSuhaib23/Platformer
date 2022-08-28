@@ -110,7 +110,7 @@ public class Game implements Runnable {
 	private void render() {
 		display.clear();
 		camera.setCameraFollow(player.position());
-		renderer.render(level);
+		renderer.render(level, player);
 		player.render(renderer);
 		window.display(display.pixels);
 	}

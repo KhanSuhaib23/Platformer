@@ -23,6 +23,13 @@ public class Vector2 {
         return new Vector2(v1.x + v2.x, v1.y + v2.y);
     }
 
+    public Vector2 scaleDown(long s) {
+        this.x /= s;
+        this.y /= s;
+
+        return this;
+    }
+
     public static Vector2 sub(Vector2 v1, Vector2 v2) {
         return new Vector2(v1.x - v2.x, v1.y - v2.y);
     }
@@ -34,6 +41,13 @@ public class Vector2 {
     public Vector2 add(Vector2 other) {
         x += other.x;
         y += other.y;
+
+        return this;
+    }
+
+    public Vector2 sub(Vector2 other) {
+        x -= other.x;
+        y -= other.y;
 
         return this;
     }
