@@ -15,10 +15,6 @@ import static com.suhaib.game.input.UserInput.*;
 public class Player extends Mob {
 
 	private GameInput gameInput;
-	private boolean jump_check = false;
-	private int jumpSpeedY = 10;
-	private int updating = 0;
-	private boolean check = true;
 
 	private static final long xOffsetCollider = 3;
 
@@ -31,179 +27,38 @@ public class Player extends Mob {
 
 
 	public void render(Renderer renderer) {
-//		Sprite currentSprite = Sprite.mario[0];
-//		if (moving) {
-//			if (direction == 0) {
-//				if (animation % 12 < 4) {
-//					currentSprite = Sprite.mario[2];
-//				}
-//				else if (animation % 12 < 8) {
-//					currentSprite = Sprite.mario[4];
-//				}
-//				else {
-//					currentSprite = Sprite.mario[6];
-//				}
-//			}
-//			if (direction == 1) {
-//				if (animation % 12 < 4) {
-//					currentSprite = Sprite.mario[3];
-//				}
-//				else if (animation % 12 < 8) {
-//					currentSprite = Sprite.mario[5];
-//				}
-//				else {
-//					currentSprite = Sprite.mario[7];
-//				}
-//			}
-//		}
-//		else {
-//			if (direction == 0) {
-//				currentSprite = Sprite.mario[0];
-//			}
-//			else if (direction == 1) {
-//				currentSprite = Sprite.mario[1];
-//			}
-//		}
-//		if (sliding) {
-//			if (direction == 0) {
-//				currentSprite = Sprite.mario[9];
-//			}
-//			else {
-//				currentSprite = Sprite.mario[8];
-//			}
-//		}
-//		if (jumping) {
-//			if (direction == 0) {
-//				currentSprite = Sprite.mario[10];
-//			}
-//			else {
-//				currentSprite = Sprite.mario[11];
-//			}
-//		}
 		renderer.renderSprite(position, animation.getFrame());
 		renderer.renderCollisionBox(position, collider, 0xffff0000);
 	}
 
 	public void update() {
+		final int AIR_RESISTANCE = 6;
+
 		boolean left = gameInput.isDown(LEFT), right = gameInput.isDown(RIGHT), run = gameInput.isDown(RUN), jump = gameInput.isDown(JUMP);
-		updating++;
-		if (updating >= 10000) updating = 0;
-		if (!left && right) {
-			if (direction == 1) {
-				sliding = true;
-				if (updating % 3 == 0) velocity.x += 64;
-				if (velocity.x == 0) {
-					check = true;
-				}
-				else {
-					check = false;
-				}
-			}
-			if (check) {
-				sliding = false;
-				velocity.x = 32;
-				direction = 0;
-				check = false;
-			}
-			if (gameInput.isDown(RUN)) {
-				if (updating % 13 == 0) velocity.x += 16;
-				if (velocity.x > 4) velocity.x = 86;
-			}
-			else {
-				velocity.x = 32;
-			}
+
+		if (left) {
+			acceleration.x = -8 * (run ? 2 : 1);
+		} else if (right) {
+			acceleration.x = 8 * (run ? 2 : 1);
+		} else {
+			acceleration.x = 0;
 		}
 
-		if (!right && left) {
-			if (direction == 0) {
-				sliding = true;
-				if (updating % 3 == 0) velocity.x -= 64;
-				if (velocity.x == 0) {
-					check = true;
-				}
-				else {
-					check = false;
-				}
-			}
-			if (check) {
-				sliding = false;
-				velocity.x = -32;
-				direction = 1;
-				check = false;
-			}
-			if (run) {
-				if (updating % 13 == 0) velocity.x -= 32;
-				if (velocity.x < -4) velocity.x = -86;
-			}
-			else {
-				velocity.x = -32;
-			}
-		}
-
-		if (right && left) {
-			if (velocity.x > 0) {
-				if (updating % 13 == 0) velocity.x -= 32;
-				if (velocity.x < 0) velocity.x = 0;
-			}
-			if (velocity.x < 0) {
-				if (updating % 13 == 0) velocity.x += 32;
-				if (velocity.x > 0) velocity.x = 0;
-			}
-			check = true;
-		}
-
-		if (!right && !left) {
-			if (velocity.x > 0) {
-				if (updating % 13 == 0) velocity.x -= 32;
-				if (velocity.x < 0) velocity.x = 0;
-			}
-			if (velocity.x < 0) {
-				if (updating % 13 == 0) velocity.x += 32;
-				if (velocity.x > 0) velocity.x = 0;
-			}
-			check = true;
-		}
-		// velocity.y = 0;
 		if (jump) {
-			if (!jump_check) {
-				if (velocity.y == 0) {
-					jump_check = true;
-					velocity.y = 6 * 32;
-				}
-			}
-
+			acceleration.y = 32;
+		} else {
+			acceleration.y = GRAVITY;
 		}
 
-		if (jump_check) {
-			if (updating % 4 == 0) {
-				velocity.y -= 16;
-			}
-			if (!jump) {
-				if (velocity.y > 0) {
-					velocity.y = 0;
-				}
-				else {
-					if (updating % 8 == 0) velocity.y -= 32;
-				}
-			}
+		if (velocity.x / AIR_RESISTANCE == 0) {
+			velocity.x = 0;
 		}
-		else {
-			velocity.y -= 32;
+		if (velocity.y / AIR_RESISTANCE == 0) {
+			velocity.y = 0;
 		}
 
-		if (velocity.x == 0 && velocity.y == 0) {
-			moving = false;
-			jumping = false;
-		}
-		else if (velocity.y != 0) {
-			jumping = true;
-			moving = false;
-		}
-		else if (velocity.x != 0 && velocity.y == 0) {
-			moving = true;
-			jumping = false;
-		}
-
+		velocity.sub(Vector2.scaleDown(velocity, AIR_RESISTANCE));
+		velocity.add(acceleration);
 
 		Vector2 adjust = move();
 
@@ -216,11 +71,6 @@ public class Player extends Mob {
 		position.sub(adjust);
 
 		animation.update((int) Math.abs(velocity.x), velocity.x >= 0 ? Animation.Direction.RIGHT : Animation.Direction.LEFT);
-
-	}
-
-	public RenderPosition renderPosition() {
-		return position.renderPosition();
 	}
 
 }

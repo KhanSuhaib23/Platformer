@@ -23,6 +23,10 @@ public class Vector2 {
         return new Vector2(v1.x + v2.x, v1.y + v2.y);
     }
 
+    public static Vector2 scaleDown(Vector2 v, long s) {
+        return new Vector2(v.x / s, v.y / s);
+    }
+
     public Vector2 scaleDown(long s) {
         this.x /= s;
         this.y /= s;

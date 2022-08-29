@@ -25,7 +25,10 @@ public class Mob extends Entity {
 	protected boolean check = true;
 	protected boolean jump_check = true;
 
+	protected final long GRAVITY = -32;
+
 	protected Vector2 velocity = new Vector2(0, 0);
+	protected Vector2 acceleration = new Vector2(0, GRAVITY);
 	public BoxCollider collider;
 
 	public Mob(Vector2 position, Animation animation, BoxCollider collider, Level level) {
